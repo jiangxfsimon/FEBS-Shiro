@@ -42,6 +42,12 @@ layui.extend({
             layui.link(url + '?v=' + conf.v)
         });
         self.initView(self.route)
+        String.prototype.startsWith = function (str) {
+            if (str == null || str === "" || this.length === 0 || str.length > this.length) {
+                return false;
+            }
+            return this.substr(0, str.length) === str;
+        };
     };
     self.post = function (params) {
         view.request($.extend({type: 'post'}, params))
@@ -529,6 +535,9 @@ layui.extend({
                 limitName: 'pageSize'
             },
             parseData: function (res) {
+                if (res.code !== 200) {
+                    console.error(res)
+                }
                 return {
                     "code": res.code === 200 ? 0 : res.code,
                     "count": res.data.total,
@@ -561,7 +570,6 @@ layui.extend({
         })
     };
 
-    // 文件下载
     self.download = function (url, params, fileName) {
         self.view.loadBar.start();
         url += '?' + parseParams(params);
@@ -581,12 +589,17 @@ layui.extend({
                         window.navigator.msSaveOrOpenBlob(createFile(base64file.replace('data:' + fileType + ';base64,', ''), fileType), fileName);
                     } else { // chrome，firefox
                         var link = document.createElement('a');
-                        link.style.display = 'none';
-                        link.href = e.target.result;
-                        link.setAttribute('download', fileName);
-                        document.body.appendChild(link);
-                        link.click();
-                        $(link).remove();
+                        link.download = fileName;
+                        link.style.display = "none";
+                        var blobs = new Blob([blob]);
+                        if (blobs.size === 0) {
+                            layer.msg('下载失败，文件内容为空！');
+                        } else {
+                            link.href = URL.createObjectURL(blobs);
+                            document.body.appendChild(link);
+                            link.click();
+                            document.body.removeChild(link);
+                        }
                     }
                 }
             } else {

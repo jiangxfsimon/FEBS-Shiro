@@ -10,7 +10,7 @@ FEBS-Shiro是一款简单高效的后台权限管理系统，使用Spring Boot�
 
 ### 演示地址
 
-[https://shiro.mrbird.cn:8080](https://shiro.mrbird.cn:8080)
+[http://47.104.70.138:8080](http://47.104.70.138:8080/login)
 
 演示环境账号密码：
 
@@ -158,6 +158,8 @@ FEBS-Cloud | 基于Spring Cloud的微服务权限系统 | [https://github.com/wu
     <img src="https://avatars2.githubusercontent.com/u/38187913?s=400&v=4" width="45px"></a>
 <a href="https://github.com/wtune">
     <img src="https://avatars1.githubusercontent.com/u/59522871?s=400&v=4" width="45px"></a>                    
+<a href="https://github.com/robinliu2827">
+    <img src="https://avatars2.githubusercontent.com/u/46709292?s=400&v=4" width="45px"></a> 
 
 ### 反馈交流
 

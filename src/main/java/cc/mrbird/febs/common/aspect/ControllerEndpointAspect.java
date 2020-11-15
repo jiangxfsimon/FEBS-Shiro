@@ -4,8 +4,11 @@ import cc.mrbird.febs.common.annotation.ControllerEndpoint;
 import cc.mrbird.febs.common.exception.FebsException;
 import cc.mrbird.febs.common.utils.FebsUtil;
 import cc.mrbird.febs.monitor.service.ILogService;
+import cc.mrbird.febs.system.entity.User;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.shiro.SecurityUtils;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
@@ -20,6 +23,7 @@ import java.lang.reflect.Method;
 /**
  * @author MrBird
  */
+@Slf4j
 @Aspect
 @Component
 @RequiredArgsConstructor
@@ -47,10 +51,13 @@ public class ControllerEndpointAspect extends BaseAspectSupport {
                 if (servletRequestAttributes != null) {
                     ip = servletRequestAttributes.getRequest().getRemoteAddr();
                 }
-                logService.saveLog(point, targetMethod, ip, operation, start);
+                // 设置操作用户
+                User user = (User) SecurityUtils.getSubject().getPrincipal();
+                logService.saveLog(user, point, targetMethod, ip, operation, start);
             }
             return result;
         } catch (Throwable throwable) {
+            log.error(throwable.getMessage(), throwable);
             String exceptionMessage = annotation.exceptionMessage();
             String message = throwable.getMessage();
             String error = FebsUtil.containChinese(message) ? exceptionMessage + "，" + message : exceptionMessage;
